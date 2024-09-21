@@ -75,23 +75,24 @@ Save and restart wazuh service. Check for sysmon logs in wazuh events.
 
 a widely recognized cybersecurity tool, used to extract sensitive information such as passwords, hashes, and Kerberos tickets from Windows systems. Originally developed for research purposes, it quickly became popular in both legitimate penetration testing and malicious activities, like credential theft and lateral movement in
 networks. Its key features include Pass-the-Hash, Pass-the-Ticket, and Over-Pass-the-Hash attacks, making it a powerful tool for privilege escalation and post-exploitation activities. Despite its usefulness in security testing, Mimikatz is also commonly used in real-world attacks, making it a frequent target of detection by security tools.
+
 Lets download mimikatz on windows 10. Exclude the folder from security for downloading mimikatz
 
 ![image](https://github.com/user-attachments/assets/e9abab25-cb45-4495-93f0-851f976ba7fc)
 
 Download and execute mimikatz
 
-![image](https://github.com/user-attachments/assets/36569fe1-7595-43cd-a65c-f48d00a6d3aa)
+![image](https://github.com/user-attachments/assets/39f167e3-b844-40fc-b336-5c6ce6ba499a)
 
 Check wazuh dashboard for any events
 
-![image](https://github.com/user-attachments/assets/c328320f-5c70-4347-ba22-2c6443dc3c91)
+![image](https://github.com/user-attachments/assets/ccf54768-6b33-42e7-b0d7-d3197149b557)
 
-We aren't getting any events so we will add rule to the ossec.conf file in wazuh manager and change
+We aren't getting any events so we will add rule to the ossec.conf file in wazuh manager
 
-![image](https://github.com/user-attachments/assets/e1c66113-df4a-4c14-bcaa-220f6229b49d)
+![image](https://github.com/user-attachments/assets/23906a42-ec6d-4559-82b5-5374d8982825)
 
-This changes in which format the logs should be dsplayed. Save and restart the wazuh manager. We created the following files and logs will be placed here.
+This will change the format in which logs should be displayed. Save and restart the wazuh manager. We created the following files and logs will be placed here.
 
 ![image](https://github.com/user-attachments/assets/3a5bcb7b-1af8-4880-8232-58cb26504bab)
 
@@ -128,13 +129,13 @@ dashboard in management.
 
 ![image](https://github.com/user-attachments/assets/22d513e5-4e2a-44d8-8770-7eb871f358f7)
 
-Move to manage rue files and search for sysmon rule for event id 1.
+Move to manage files and search for sysmon rule for event id 1.
 
 ![image](https://github.com/user-attachments/assets/99c88f8a-1723-4244-9aa3-18902b6792d9)
 
 ![image](https://github.com/user-attachments/assets/f904c82d-f703-4bcf-85e4-269b0d514591)
 
-Using this rule as reference we will built out our own custom rule formimikatz. We will edit the local_rules.xml file in custom rules.
+Using this rule as reference we will built out our own custom rule for mimikatz. We will edit the local_rules.xml file in custom rules.
 
 ![image](https://github.com/user-attachments/assets/4c0a28cd-326f-41ab-a8c9-6738448a6336)
 
@@ -146,8 +147,7 @@ Custom Rule For Mimikatz:
 
 * The originalFileName value should have mimikatz.exe
 
-* Mitre value will be T1003 which means credential dumping which is what
-mimikatz do.
+* Mitre value will be T1003 which means credential dumping which is what mimikatz do.
 
 ![image](https://github.com/user-attachments/assets/4bb1938b-c31f-4619-b6d9-356a451b5d00)
 
@@ -165,15 +165,16 @@ Wazuh detected the mimikatz execution even when we changed the name
 
 ![image](https://github.com/user-attachments/assets/ca6a82c2-1c93-4bcc-a47a-ae88aec397d3)
 
-![image](https://github.com/user-attachments/assets/b20c0fc3-865f-4bad-af71-0bf2afe15574)
-
-We have ingested sysmon logs into wazuh now we will automate the process using shuffle and hive.
+We have ingested sysmon logs into wazuh now we will automate the process using shuffle.
 
 ## CONNECTING SHUFFLE
 
-We will now connect shuffle which is our SOAR platform. Then send an alert to the hive and also the SOC analyst via an email. At the end we will have a fully functional lab having wazuh, the hive and shuffle.
+We will now connect shuffle which is our SOAR platform. Then send an alert to the SOC analyst via an email. At the end we will have a fully functional lab having wazuh, VirusTotal integration and shuffle.
 
-** Shuffle: ** Shuffle is an open-source Security Orchestration, Automation, and Response (SOAR) platform designed to streamline security operations by automating repetitive tasks and integrating various security tools. It allows users to create automated workflows with a no-code or low-code interface, enabling quicker threat detection, incident response, and log analysis. By connecting systems like SIEMs, firewalls, and threat intelligence platforms, Shuffle SOAR enhances coordination and efficiency in responding to security incidents, reducing the need for manual intervention and improving overall security response times.
+#### Shuffle: 
+
+Shuffle is an open-source Security Orchestration, Automation, and Response (SOAR) platform designed to streamline security operations by automating repetitive tasks and integrating various security tools. It allows users to create automated workflows with a no-code or low-code interface, enabling quicker threat detection, incident response, and log analysis. By connecting systems like SIEMs, firewalls, and threat intelligence platforms, Shuffle SOAR enhances coordination and efficiency in responding to security incidents, reducing the need for manual intervention and improving overall security response times.
+
 Head over to shuffle website, login and create a new workflow. Add a webhook from the triggers bar and then copy its URL to paste it in the ossec file.
 
 ![image](https://github.com/user-attachments/assets/57d40583-2bb1-4774-a016-a449d177bd4e)
@@ -182,7 +183,7 @@ Now select the change me icon and select the Execution Argument in the call sect
 
 ![image](https://github.com/user-attachments/assets/13bf52a6-eda5-49f5-9cb2-71dab612593f)
 
-To integrate shuffle in wazuh we add the integration tag into the ossec file. This will tell the rule 10002 which we created for mimikatz to go to shuffle.
+To integrate shuffle in wazuh we add the integration tag into the ossec file and add the URL copied from webhook. This will tell the rule 10002 which we created for mimikatz to go to shuffle.
 
 ![image](https://github.com/user-attachments/assets/beed89b2-5e3c-45f3-b48a-ac2072328fdf)
 
@@ -198,7 +199,7 @@ Execute mimikatz in windows and see if event is generated in shuffle. Start the 
 
 ### Workflow In Shuffle
 
-The mimikatz alert will be sent to shuffle. The shuffle will extract the SHA256 of the file and then check reputation score using virustotal. It will send the details over to the hive to create alert. An email will be sent to SOC analyst for further investigation.
+The mimikatz alert will be sent to shuffle. The shuffle will extract the SHA256 of the file and then check reputation score using VirusTotal. An email will be sent to SOC analyst for further investigation.
 If we look at the events we see the hash value is appended by using SHA1=, to automate we need to parse the hash value out and send only the hash value not the SHA1= to VirusTotal. For doing this we will change the Change Me icon values.
 
 ![image](https://github.com/user-attachments/assets/9786a5c5-fce4-437e-b0a0-f4413d2156a1)
