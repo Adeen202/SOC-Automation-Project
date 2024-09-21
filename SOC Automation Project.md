@@ -56,23 +56,24 @@ We have successfully configured wazuh. Our end goal is to detect mimikatz on our
 
 We will generate a telemetry related to mimikatz and then generate a custom mimikatz alert. First we will make modifications in our ossec.conf file present on our agent. We will be needing sysmon logs for this. So make sure sysmon is installed.
 
-**Sysmon (System Monitor): **
+#### Sysmon (System Monitor): 
 is a Windows system service and driver that logs detailed system activity to the Windows Event Log. It is part of the Sysinternals Suite developed by Microsoft and is commonly used in security monitoring and threat detection. Sysmon tracks and logs events such as process creations, network connections, file changes, and more, which are helpful in detecting malicious behavior and investigating security incidents. These logs can be analyzed by SIEMs or security teams to detect anomalies, investigate attacks, and maintain a secure environment.
 
 ![image](https://github.com/user-attachments/assets/29bb34c9-1384-4564-8d31-d6ca45044376)
 
-We will be ingesting sysmon logs so chaning the location to sysmon channel
+We will be ingesting sysmon logs, so coping the location to sysmon channel
 
 ![image](https://github.com/user-attachments/assets/234ad0ef-ff9f-4a4b-8668-1466af753471)
 
-Add this name to conf file in log analysis section and remove other log
-forwarding and ingestion from this section
+Add this name to conf file in log analysis section and remove other log forwarding and ingestion from this section
 
 ![image](https://github.com/user-attachments/assets/08fbf732-6716-4f8a-8c6a-fb989f13c5ec)
 
-Save and restart wazuh service. Checking sysmon logs in wazuh events.
+Save and restart wazuh service. Check for sysmon logs in wazuh events.
 
-** Mimikatz: ** a widely recognized cybersecurity tool, used to extract sensitive information such as passwords, hashes, and Kerberos tickets from Windows systems. Originally developed for research purposes, it quickly became popular in both legitimate penetration testing and malicious activities, like credential theft and lateral movement in
+ #### Mimikatz:  
+
+a widely recognized cybersecurity tool, used to extract sensitive information such as passwords, hashes, and Kerberos tickets from Windows systems. Originally developed for research purposes, it quickly became popular in both legitimate penetration testing and malicious activities, like credential theft and lateral movement in
 networks. Its key features include Pass-the-Hash, Pass-the-Ticket, and Over-Pass-the-Hash attacks, making it a powerful tool for privilege escalation and post-exploitation activities. Despite its usefulness in security testing, Mimikatz is also commonly used in real-world attacks, making it a frequent target of detection by security tools.
 Lets download mimikatz on windows 10. Exclude the folder from security for downloading mimikatz
 
